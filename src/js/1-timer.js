@@ -4,26 +4,74 @@ import "flatpickr/dist/flatpickr.min.css";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-const time = document.querySelector('.input[type="text"]');
+const btnStart = document.querySelector('button');
+const input = document.querySelector('input');
+const day = document.querySelector('.value[ data-days]');
+const hour = document.querySelector('.value[ data-hours]');
+const minute = document.querySelector('.value[ data-minutes]');
+const second = document.querySelector('.value[ data-seconds]');
 
+btnStart.disabled = true;
+
+let userSelectedDate;
+let difference;
+let intervalId;
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+    //console.log(selectedDates[0]);
+    userSelectedDate = selectedDates[0];
+    if (userSelectedDate < Date.now()) {
+      iziToast.show({
+        message: "Please choose a date in the future",
+        messageColor: 'white',
+        backgroundColor: 'red',
+        position: 'topRight',
+      })
+      btnStart.disabled = true;
+      btnStart.style.background = '';
+      btnStart.style.color = '';
+    } else {
+      btnStart.disabled = false;
+      btnStart.style.background = 'blue';
+      btnStart.style.color = 'white';
+    }
   },
 };
 
-function flatpickr(selector, options) {
-    const dates = {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-    }
-}
+flatpickr('#datetime-picker', options);
 
-flatpickr()
+
+btnStart.addEventListener('click', (e) => {
+  btnStart.disabled = true;
+  input.disabled = true;
+  btnStart.style.background = '';
+  btnStart.style.color = '';
+  difference = userSelectedDate - Date.now();
+  intervalId = setInterval(() => {
+    tick(convertMs(difference));
+    difference -= 1000;
+    if (difference <= 0) {
+      clearInterval(intervalId)
+    }
+  }, 1000)
+});
+
+function stopInterval(difference) {
+  if (difference <= 0) {
+    clearInterval(intervalId);
+  }
+};
+
+function tick({days, hours, minutes, seconds}) {
+  day.textContent = `${addLeadingZero(days)}`
+  hour.textContent = `${addLeadingZero(hours)}`;
+  minute.textContent = `${addLeadingZero(minutes)}`;
+  second.textContent = `${addLeadingZero(seconds)}`;
+};
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -42,9 +90,8 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
-}
+};
 
-console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
-
+function addLeadingZero(value) {
+  return value.toString().padStart(2, '0');
+};
