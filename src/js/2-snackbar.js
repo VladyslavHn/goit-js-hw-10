@@ -27,6 +27,7 @@ form.addEventListener('submit', (e) => {
             backgroundColor: '#59A10D',
             position: 'topRight',
         });
+        form.reset();
     }).catch(() => {
         return iziToast.show({
             message: `❌ Rejected promise in ${delay}ms`,
@@ -34,5 +35,6 @@ form.addEventListener('submit', (e) => {
             backgroundColor: '#FF6161',
             position: 'topRight',
         });
+        form.reset();
     });
 });
