@@ -60,12 +60,6 @@ btnStart.addEventListener('click', (e) => {
   }, 1000)
 });
 
-function stopInterval(difference) {
-  if (difference <= 0) {
-    clearInterval(intervalId);
-  }
-};
-
 function tick({days, hours, minutes, seconds}) {
   day.textContent = `${addLeadingZero(days)}`
   hour.textContent = `${addLeadingZero(hours)}`;

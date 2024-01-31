@@ -9,32 +9,32 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
     const delay = parseInt(delayInput.value, 10);
     const state = Array.from(stateBtn).find(btn => btn.checked);
-
     const promise = new Promise((resolve, reject) => {
         setTimeout(() => {
             if (state.value === 'fulfilled') {
-                resolve(delayInput.value = '');
+                resolve(delay);
             } else {
-                reject(delayInput.value = '');
+                reject(delay);
             }
         }, delay);
+        form.reset();
     });
 
-    promise.then(() => {
+    promise.then(delay => {
         iziToast.show({
             message: `✅ Fulfilled promise in ${delay}ms`,
             messageColor: 'white',
             backgroundColor: '#59A10D',
             position: 'topRight',
         });
-        //delayInput.value = '';
-    }).catch(() => {
+        
+    }).catch(delay => {
         iziToast.show({
             message: `❌ Rejected promise in ${delay}ms`,
             messageColor: 'white',
             backgroundColor: '#FF6161',
             position: 'topRight',
         });
-        //delayInput.value = '';
+        
     });
 });
